@@ -26,5 +26,6 @@
 
    <!-- List of XML mapping files -->
    <mapping class="com.deskind.tradeoptimization.entities.Bar"/>
+   <mapping class="com.deskind.tradeoptimization.entities.Sgn"/>
    </session-factory>
 </hibernate-configuration>
