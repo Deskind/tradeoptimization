@@ -2,7 +2,11 @@
 package com.deskind.tradeoptimization.main;
 
 import com.deskind.tradeoptimization.entities.Sgn;
+import com.deskind.tradeoptimization.entities.TradePair;
+import com.deskind.tradeoptimization.utils.HibernateUtils;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +22,7 @@ public class AppMain extends Application{
     
         
     @Override
+    
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
         Scene scene = new Scene(root);
@@ -25,41 +30,26 @@ public class AppMain extends Application{
         stage.show();
     }
     
-    public static void main(String[] args) {
-        launch(args);
+    /**Test method for getting list of signals (Sgn)*/
+    public static ArrayList<Sgn> getList(){
+        ArrayList<Sgn> list = new ArrayList<Sgn>();
+        list.add(new Sgn(LocalDateTime.now(), 1));
+        list.add(new Sgn(LocalDateTime.now(), 0));
+        return list;
     }
-        
-//        Configuration configuration = new Configuration();
-//        configuration.configure("hibernate.cfg.xml");
-//        StandardServiceRegistryBuilder ssrb = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
-//        SessionFactory sessionFactory = configuration.buildSessionFactory(ssrb.build());
-//        Session session = sessionFactory.openSession();
-//        
-//        
-//        session.beginTransaction();
-        
-        
-//        List<Bar> list = AppUtils.getBars(AppUtils.getReader("EURUSD5.csv"));
-//        
-//        for(Bar b : list){
-//            session.save(b);
-//        }
-
-//        session.save(new Sgn(LocalDateTime.now(), 3));
-
-//        Sgn s = (Sgn)session.get(Sgn.class, 15l);
-//        
-//        if(s!=null){
-//            System.out.println("The s variable is ok");
-//            System.out.println(s.getDate().toString());
-//        }else System.out.println("Something wrong!!!");
-
-//        Bar b = (Bar)session.get(Bar.class, 2l);
-//        System.out.println(b.getDate().toString());
-        
-//        session.getTransaction().commit();
-//        session.close();
-//        sessionFactory.close();
-        
+    //end
     
+    public static void main(String[] args) {
+//        launch(args);
+        
+        SessionFactory sf = HibernateUtils.makeSessionFactory();
+        Session s = sf.openSession();
+        s.beginTransaction();
+        ArrayList<Sgn> list = getList();
+        TradePair tp = new TradePair();
+        s.save(new TradePair("USDBLR", list));
+        s.getTransaction().commit();
+        s.close();
+        HibernateUtils.sessionFactory.close();
+    }
 }
