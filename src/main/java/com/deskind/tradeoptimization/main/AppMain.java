@@ -42,14 +42,14 @@ public class AppMain extends Application{
     public static void main(String[] args) {
 //        launch(args);
         
-        SessionFactory sf = HibernateUtils.makeSessionFactory();
-        Session s = sf.openSession();
-        s.beginTransaction();
+        SessionFactory sessionFactory = HibernateUtils.getHibernateSessionFactory();
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
         ArrayList<Sgn> list = getList();
         TradePair tp = new TradePair();
-        s.save(new TradePair("USDBLR", list));
-        s.getTransaction().commit();
-        s.close();
+        session.save(new TradePair("USDBLR", list));
+        session.getTransaction().commit();
+        session.close();
         HibernateUtils.sessionFactory.close();
     }
 }

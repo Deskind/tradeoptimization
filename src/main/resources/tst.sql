@@ -42,3 +42,4 @@ insert into human (name, secondname, date) values ("Kate", "Shilko", '2017-03-24
 ALTER TABLE human
 add date TIMESTAMP;
 
+show tables;

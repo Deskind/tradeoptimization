@@ -22,10 +22,10 @@
       root
    </property>
    <property name="hibernate.connection.password"></property>
-   <property name="hibernate.hbm2ddl.auto">update</property>
+   <property name="hibernate.hbm2ddl.auto">create</property>
 
    <!-- List of XML mapping files -->
-   <mapping class="com.deskind.tradeoptimization.entities.Bar"/>
+   <mapping class="com.deskind.tradeoptimization.entities.TradePair"/>
    <mapping class="com.deskind.tradeoptimization.entities.Sgn"/>
    </session-factory>
 </hibernate-configuration>
