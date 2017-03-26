@@ -1,16 +1,18 @@
 use tradeoptimization;
 create database if not exists tradeoptimization;
+
 load data local infile
-'C:\\EURUSD-5-TDF signals.csv'
+'c:\\EURAUD-5.csv'
  into table sgn fields terminated by ','
   enclosed by '"'
   lines terminated by '\n'
-    (date, result);
+    (date, result, pair);
 
 create table sgn(
 id INT AUTO_INCREMENT PRIMARY KEY,
 date TIMESTAMP,
-result INT
+result INT,
+pair varchar(10)
 );
 
 create table sgn(
@@ -19,7 +21,7 @@ result INT
 );
 
 
-drop table sng;
+drop table sgn;
 
 insert into signal (result) values(1);
 

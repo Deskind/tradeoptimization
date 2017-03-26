@@ -27,6 +27,9 @@ public class Sgn {
     @Column(name="RESULT")
     private int result;
 
+    @Column(name = "PAIR")
+    private String pair;
+    
     public Sgn() {
     }
 
