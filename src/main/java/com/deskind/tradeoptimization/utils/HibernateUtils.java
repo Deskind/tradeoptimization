@@ -12,13 +12,17 @@ import org.hibernate.cfg.Configuration;
 
 public class HibernateUtils {
     
-    public static SessionFactory sessionFactory = null;    
+    private static SessionFactory sessionFactory = null;    
 
-    public static SessionFactory getHibernateSessionFactory(){
+    public static SessionFactory getSessionFactory(){
+        if(sessionFactory == null){
         Configuration configuration = new Configuration();
         configuration.configure("hibernate.cfg.xml");
         StandardServiceRegistryBuilder ssrb = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
         sessionFactory = configuration.buildSessionFactory(ssrb.build());
+        }
         return sessionFactory;
     }
+    
+    
 }

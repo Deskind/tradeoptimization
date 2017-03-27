@@ -15,6 +15,11 @@ result INT,
 pair varchar(10)
 );
 
+create table if not exists pair(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(10) 
+);
+
 create table sgn(
 date TIMESTAMP,
 result INT

@@ -6,7 +6,6 @@
 package com.deskind.tradeoptimization.entities;
 
 import java.util.List;
-import javax.annotation.Generated;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,17 +25,12 @@ public class TradePair {
     
     @Column(name="NAME")
     private String name;
-    
-    @OneToMany(targetEntity = Sgn.class, cascade = CascadeType.ALL)
-    @Column(name="SIGNALS")
-    private List<Sgn> list;
 
     public TradePair() {
     }
 
-    public TradePair(String name, List<Sgn> list) {
+    public TradePair(String name) {
         this.name = name;
-        this.list = list;
     }
 
     public void setId(long id) {
@@ -47,10 +41,6 @@ public class TradePair {
         this.name = name;
     }
 
-    public void setList(List<Sgn> list) {
-        this.list = list;
-    }
-
     public long getId() {
         return id;
     }
@@ -58,10 +48,4 @@ public class TradePair {
     public String getName() {
         return name;
     }
-
-    public List<Sgn> getList() {
-        return list;
-    }
-    
-    
 }
