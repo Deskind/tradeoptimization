@@ -6,16 +6,10 @@ import com.deskind.tradeoptimization.utils.HibernateUtils;
 import com.deskind.tradeoptimization.utils.SqlUtil;
 import java.io.File;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -24,11 +18,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 
 
 public class MainController implements Initializable {
-
+    
     @FXML
     private Button chooseFilesBtn;
     
@@ -42,58 +35,35 @@ public class MainController implements Initializable {
 
     static void dbInitialization(List<File> files) {
         
+        SqlUtil.createSgnTable();
+        
         SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
         Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        HashMap<String, File> map =  new HashMap<>();
-        Connection connection = SqlUtil.getConnection();
-        Statement statement = null;
+        session.beginTransaction();
         
-        try {
-            statement = connection.createStatement();
-        } catch (SQLException ex) {
-            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        /**Choose files from file system*/
-        
-            /**Initialize a map*/
-            for(File f : files){
-                String path = f.getPath();
-                String forMap = path.substring(0, 5);
-                map.put(forMap, f);
-            }
-            //end
-        //end 
-
-        try {
-            statement.execute(SqlUtil.createSgnTableQuery);
-            statement.execute(SqlUtil.createPairQuery);
-        } catch (SQLException ex) {
-            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        /**Iterate through map and fill sgn table*/
-        Iterator it = map.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry)it.next();
-            String pairName = (String)entry.getKey();
-            session.save(new TradePair(pairName));
-            
-            File f = (File)entry.getValue();
-            String path = f.getPath();
-            String convertedPath = path.replace("\\", "\\\\");
-            
-            try {
-                statement.execute(SqlUtil.fillTableFromFile(convertedPath));
-            } catch (SQLException ex) {
-                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        for(File f : files){
+            String s = f.getPath();
+            Pattern pattern = Pattern.compile("[A-Z]*-\\d");
+            Matcher matcher = pattern.matcher(s);
+            if(matcher.find()){
+               session.save(new TradePair(matcher.group()));
+            }else System.out.println("CAN'T GET PAIR NAME");
         }
         
         session.getTransaction().commit();
         session.close();
         sessionFactory.close();
+        sessionFactory.close();
+        
+        for(File f : files){
+//            File f = files.get(0);
+            String path = f.getPath();
+            String convertedPath = path.replace("\\", "\\\\");
+            SqlUtil.fillSgn(convertedPath);
+        }
+        
+        
+        
         
     }
     

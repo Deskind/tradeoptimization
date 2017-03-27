@@ -1,29 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.deskind.tradeoptimization.entities;
 
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 @Entity
-@Table(name="TRADE_PAIRS")
 public class TradePair {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="PAIR_ID")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     
-    @Column(name="NAME")
+    @Column
     private String name;
 
     public TradePair() {
@@ -48,4 +38,6 @@ public class TradePair {
     public String getName() {
         return name;
     }
+    
+    
 }

@@ -3,31 +3,23 @@ package com.deskind.tradeoptimization.entities;
 
 import com.deskind.tradeoptimization.utils.LocalDateTimeAttributeConverter;
 import java.time.LocalDateTime;
-import java.util.Date;
-import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
-@Table(name="SIGNALS")
 public class Sgn {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="SIGNAL_ID")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     
-    @Column(name="DATE")
     @Convert(converter = LocalDateTimeAttributeConverter.class)
     private LocalDateTime date;
     
-    @Column(name="RESULT")
     private int result;
 
-    @Column(name = "PAIR")
     private String pair;
     
     public Sgn() {

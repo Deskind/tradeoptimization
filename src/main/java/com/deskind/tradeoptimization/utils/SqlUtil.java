@@ -4,6 +4,7 @@ package com.deskind.tradeoptimization.utils;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,6 +44,28 @@ public class SqlUtil {
             Logger.getLogger(SqlUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
         return connection;
+    }
+
+    public static void createSgnTable() {
+        Connection connection = getConnection();
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute(createSgnTableQuery);
+            connection.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlUtil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void fillSgn(String path) {
+        Connection connection = getConnection();
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute(fillTableFromFile(path));
+            connection.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlUtil.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     
