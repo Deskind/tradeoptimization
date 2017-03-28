@@ -8,7 +8,7 @@ import com.deskind.tradeoptimization.utils.SqlUtil;
 import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
@@ -46,11 +46,14 @@ public class MainController implements Initializable {
         LocalDate iteratedDate = null;
         //The most latest date in Sgn table
         LocalDate latestDate = null;
+        //The variable contains profit in percents
+        Float balance;
+        //Variable contains series of data for every trade pair
+        List<XYChart.Series<String, Number>> series = new ArrayList<>();
+        /**Hibernate's update session factory*/
+        HibernateUtils.getSessionFactory("hibernate_update.cfg.xml");
         
-        HibernateUtils.getSessionFactory("hibernate_update");
-        
-        /**Get the most earliest and most latest date from date column in Sgn table
-         and set time to 00:00:00*/
+        /**Get the most earliest and most latest date from date column in Sgn table*/
         List l = HibernateUtils.queryForMe("FROM Sgn order by date");
             //Earliest
             Sgn earliestSignal = (Sgn)l.get(0);
@@ -60,47 +63,42 @@ public class MainController implements Initializable {
             latestDate = latestSignal.getDate().toLocalDate();
         //end
         
+        /**Getting list of trade pairs*/
+        List tradePairs = HibernateUtils.queryForMe("FROM TradePair");
+        //End
         
-        //The variable contains profit in percents
-        Float f;
-        //Variable contains series of data for chart
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        
-        
-        /**Iterate through all days*/
-        while(!iteratedDate.equals(latestDate)){
-            String earliestDateAsString = String.valueOf(iteratedDate.toString());
-            List<Sgn> oneDaySignals = HibernateUtils.queryForMe("FROM Sgn WHERE date LIKE '%"+earliestDateAsString+"%'");
-            String dateForSeries;
-            Float accountForSeries = 0f;
-                /**Is list contains any objects???
-                 If it is empty just go to next day
-                 else Iterate over list and generate XYChart.Data*/
-                if(oneDaySignals.isEmpty()){
-                    latestDate = latestDate.plusDays(1);
-                }else{
-                    
-                }
-                //end
+        /**Iterate over trade pairs*/
+        for(Object t : tradePairs){
+            LocalDate date = iteratedDate;
+            TradePair tradePair = (TradePair)t;
+            String tradePairName = tradePair.getName();
+            /**Iterate over all dates*/
+            while(!iteratedDate.equals(latestDate)){
+                List dateSignals = HibernateUtils.queryForMe("from Sgn where pair like '%"+tradePairName+"%' and date like '%"+iteratedDate.toString()+"%'");
+                
+            }
+            //End
         }
-        //end
+        //End
         
-        List daySgn = HibernateUtils.queryForMe("FROM Sgn WHERE date BETWEEN '2017-03-01 00:00:00' AND '2017-03-01 23:59:59'");
         
+        
+        /**Closing hibernate's session factory*/
         HibernateUtils.sessionFactory.close();
+        //End
     }
 
     static void dbInitialization(List<File> files) {
         
         SqlUtil.createSgnTable();
         
-        SessionFactory sessionFactory = HibernateUtils.getSessionFactory("hibernate_create");
+        SessionFactory sessionFactory = HibernateUtils.getSessionFactory("hibernate.cfg.xml");
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         
         for(File f : files){
             String s = f.getPath();
-            Pattern pattern = Pattern.compile("[A-Z]*-\\d");
+            Pattern pattern = Pattern.compile("[A-Z]{6}");
             Matcher matcher = pattern.matcher(s);
             if(matcher.find()){
                session.save(new TradePair(matcher.group()));

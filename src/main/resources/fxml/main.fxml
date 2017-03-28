@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.102" fx:controller="com.deskind.tradeoptimization.controllers.MainController">
+<AnchorPane id="AnchorPane" fx:id="chart" prefHeight="869.0" prefWidth="1183.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.deskind.tradeoptimization.controllers.MainController">
    <children>
-      <Button fx:id="chooseFilesBtn" layoutX="69.0" layoutY="37.0" mnemonicParsing="false" onAction="#handleChooseFilesBtn" prefHeight="31.0" prefWidth="160.0" text="Choose Files" />
+      <Button fx:id="chooseFilesBtn" layoutX="71.0" layoutY="28.0" mnemonicParsing="false" onAction="#handleChooseFilesBtn" prefHeight="31.0" prefWidth="160.0" text="Choose Files" />
+      <LineChart layoutX="23.0" layoutY="68.0" prefHeight="681.0" prefWidth="1114.0">
+        <xAxis>
+          <CategoryAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </LineChart>
+      <Button fx:id="makeChartBtn" layoutX="315.0" layoutY="28.0" mnemonicParsing="false" onAction="#handleMakeChartBtn" prefHeight="31.0" prefWidth="160.0" text="Make chart" />
    </children>
 </AnchorPane>

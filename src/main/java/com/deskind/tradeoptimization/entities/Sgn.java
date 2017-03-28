@@ -3,6 +3,7 @@ package com.deskind.tradeoptimization.entities;
 
 import com.deskind.tradeoptimization.utils.LocalDateTimeAttributeConverter;
 import java.time.LocalDateTime;
+import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,16 +19,18 @@ public class Sgn {
     @Convert(converter = LocalDateTimeAttributeConverter.class)
     private LocalDateTime date;
     
+    @Column
     private int result;
-
+    
+    @Column
     private String pair;
     
     public Sgn() {
     }
 
-    public Sgn(LocalDateTime date, int openPrice) {
+    public Sgn(LocalDateTime date, int result) {
         this.date = date;
-        this.result = openPrice;
+        this.result = result;
     }
 
     public void setId(long id) {
@@ -38,9 +41,15 @@ public class Sgn {
         this.date = date;
     }
 
-    public void setOpenPrice(int openPrice) {
-        this.result = openPrice;
+    public void setResult(int result) {
+        this.result = result;
     }
+
+    public void setPair(String pair) {
+        this.pair = pair;
+    }
+    
+    
 
     public long getId() {
         return id;
@@ -50,8 +59,12 @@ public class Sgn {
         return date;
     }
 
-    public int getOpenPrice() {
+    public int getResult() {
         return result;
+    }
+
+    public String getPair() {
+        return pair;
     }
     
     
