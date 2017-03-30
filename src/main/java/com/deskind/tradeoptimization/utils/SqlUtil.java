@@ -43,6 +43,7 @@ public class SqlUtil {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(SqlUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
+        if(connection == null) System.out.println("NOOOOOOOOO COOOOOOONNNNNNNNEEEEEEECCCCCCTION!");
         return connection;
     }
 

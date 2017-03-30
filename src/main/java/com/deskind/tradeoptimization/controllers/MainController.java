@@ -8,12 +8,10 @@ import com.deskind.tradeoptimization.utils.SqlUtil;
 import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,8 +21,6 @@ import javafx.scene.control.Button;
 import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import sun.misc.Signal;
 
 
 public class MainController implements Initializable {
@@ -71,16 +67,18 @@ public class MainController implements Initializable {
         
         /**Iterate all days*/
         while(!iteratedDate.equals(latestDate)){
+            //Temp var for storing balance of one day
             Float balance = 0f;
+            //Temp var for one signal in days list 
             Sgn signal = null;
             //Get signals for iterated date
             List daySignals = HibernateUtils.queryForMe("from Sgn where date like '%"+iteratedDate.toString()+"%'");
-            
             /**Is list empty or not*/
             if(daySignals.size()==0){
                 iteratedDate = iteratedDate.plusDays(1);
                 continue;
             }else{
+                /**If list of signals is not empty calculate one day balance*/
                 for(Object o : daySignals){
                     signal = (Sgn)o;
                     if(signal.getResult()==1){
@@ -90,18 +88,18 @@ public class MainController implements Initializable {
                     }
                 }
             }
+            //Change total balance, add new object to series and icrease iterated date on one day
             totalBalance+=balance;
             series.getData().add(new XYChart.Data<>(iteratedDate.toString(), totalBalance));
             iteratedDate = iteratedDate.plusDays(1);
-                System.out.println(series.getData().toString());
             //End
         }
         //End
         
         totalChart.getData().add(series);
-        
+        totalChart.setVisible(true);
         /**Closing hibernate's session factory*/
-        HibernateUtils.sessionFactory.close();
+        HibernateUtils.sessionFactory = null;
         //End
     }
 
@@ -109,7 +107,7 @@ public class MainController implements Initializable {
         
         SqlUtil.createSgnTable();
         
-        HibernateUtils.getSessionFactory("hibernate.cfg.xml");
+        HibernateUtils.getSessionFactory("hibernate_create.cfg.xml");
         Session session = HibernateUtils.sessionFactory.openSession();
         session.beginTransaction();
         
@@ -124,23 +122,18 @@ public class MainController implements Initializable {
         
         session.getTransaction().commit();
         session.close();
-        HibernateUtils.sessionFactory.close();
+        HibernateUtils.sessionFactory = null;
         
         for(File f : files){
-//            File f = files.get(0);
             String path = f.getPath();
             String convertedPath = path.replace("\\", "\\\\");
             SqlUtil.fillSgn(convertedPath);
-        }
-        
-        
-        
-        
+        }        
     }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        totalChart.setVisible(false);
     }    
     
 }
