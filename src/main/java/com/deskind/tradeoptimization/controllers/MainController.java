@@ -7,9 +7,12 @@ import com.deskind.tradeoptimization.utils.HibernateUtils;
 import com.deskind.tradeoptimization.utils.SqlUtil;
 import java.io.File;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.event.ActionEvent;
@@ -105,7 +108,7 @@ public class MainController implements Initializable {
 
     static void dbInitialization(List<File> files) {
         
-        SqlUtil.createSgnTable();
+        SqlUtil.prepareDb();
         
         HibernateUtils.getSessionFactory("hibernate_create.cfg.xml");
         Session session = HibernateUtils.sessionFactory.openSession();
@@ -129,6 +132,14 @@ public class MainController implements Initializable {
             String convertedPath = path.replace("\\", "\\\\");
             SqlUtil.fillSgn(convertedPath);
         }        
+        
+        /**Closing jdbc connection*/
+        try {
+            SqlUtil.connection.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //End
     }
     
     @Override
